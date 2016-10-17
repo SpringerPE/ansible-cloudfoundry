@@ -1,0 +1,4 @@
+---
+cf_admin_user: admin
+cf_admin_password: "admin"
+cf_api: "https://api.test.cf.example.com"
