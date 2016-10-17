@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+  - vars/api.yml
+
+  tasks:
+  - name: create org jriguera
+    cf_org:
+      name: "jriguera"
+      quota: "default"
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: create org jriguera (again)
+    cf_org:
+      name: "jriguera"
+      admin_user: "admin"
+      quota: "default"
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: delete org jriguera (with force)
+    cf_org:
+      name: "jriguera"
+      state: absent
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: delete org jriguera (again)
+    cf_org:
+      name: "jriguera"
+      state: absent
+      force: yes
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
