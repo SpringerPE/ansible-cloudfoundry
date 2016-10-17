@@ -1,0 +1,96 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+  - vars/api.yml
+
+  tasks:
+    - name: enable user_org_creation
+      cf_config:
+        type: feature_flag
+        name: "user_org_creation"
+        value: true
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: enable user_org_creation (again)
+      cf_config:
+        type: feature_flag
+        name: "user_org_creation"
+        value: true
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: disable user_org_creation
+      cf_config:
+        type: feature_flag
+        name: "user_org_creation"
+        value: false
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: define env variable JRIGUERA_HOME=Rotterdam
+      cf_config:
+        type: env_var
+        name: "JRIGUERA_HOME"
+        value: "Rotterdam"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: define env variable JRIGUERA_HOME=Rotterdam (again)
+      cf_config:
+        type: env_var
+        name: "JRIGUERA_HOME"
+        value: "Rotterdam"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: define env variable JRIGUERA_HOME=Dordrecht
+      cf_config:
+        type: env_var
+        name: "JRIGUERA_HOME"
+        value: "Dordrecht"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete env variable JRIGUERA_HOME
+      cf_config:
+        type: env_var
+        name: "JRIGUERA_HOME"
+        value: "Dordrecht"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+# Default Sec groups
+
+    - name: create test-secgroup
+      cf_secgroup:
+        name: "test-secgroup"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: set test-secgroup as default for staging
+      cf_config:
+        type: sec_group
+        name: "test-secgroup"
+        context: staging
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete test-secgroup
+      cf_secgroup:
+        name: "test-secgroup"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
