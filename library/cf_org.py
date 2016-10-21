@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-ansible-cloudfoundry are modules to manage Cloud Foundry with Ansible
+ansible-cloudfoundry is a set of modules to manage Cloud Foundry with Ansible
 (c) 2016 Jose Riguera Lopez, jose.riguera@springer.com
 
 # This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,6 @@ ansible-cloudfoundry are modules to manage Cloud Foundry with Ansible
 # Python 2 and 3 compatibility
 from __future__ import unicode_literals, print_function
 
-import json
-import base64
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -30,6 +28,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from cfconfigurator.cf import CF
 from cfconfigurator.exceptions import CFException
+
 
 __program__ = "cf_org"
 __version__ = "0.1.0"
@@ -94,9 +93,9 @@ EXAMPLES = '''
   cf_org:
     name: "test"
     quota: "default"
-    admin_user: "{{ cf_admin_user }}"
-    admin_password: "{{ cf_admin_password }}"
-    api_url: "{{ cf_api }}"
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
 '''
 
 RETURN = '''
