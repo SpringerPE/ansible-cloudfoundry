@@ -1,21 +1,26 @@
 # ansible-cloudfoundry
 
-Set of Ansible modules to manage Cloud Foundry entities:
+Set of Ansible modules to manage Cloud Foundry configuration entities,
+not aimed to manage apps, routes, service brokers, etc.
 
-* cf_domain: Private and shared Domains
-* cf_org: Organizations
-* cf_quota: Quotas
-* cf_space: Spaces
-* cf_secgroup: Security groups
-* cf_secgroup_rule: Security group rules
-* cf_config: Environment variables, feature flags and default sec groups. 
+Current available modules make possible to manage:
+
+* *cf_config*: Environment variables, feature flags and default security groups. 
+* *cf_domain*: Private (with owner/shared organizations) and shared domains
+* *cf_org*: Organizations
+* *cf_space*: Spaces
+* *cf_quota*: Organization and space Quotas
+* *cf_secgroup*: Security groups
+* *cf_secgroup_rule*: Security group rules
 
 They depend on https://github.com/SpringerPE/python-cfconfigurator ,
 just install it via pip.
 
+```
+pip install -r requirements.txt
+```
 
-## Example
-
+For usage examples, have a look at `examples` folder.
 
 
 ## Author
