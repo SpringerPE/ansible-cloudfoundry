@@ -1,8 +1,6 @@
 ---
-- hosts: localhost
+- hosts: cfclient
   gather_facts: false
-  vars_files:
-  - vars/api.yml
 
   tasks:
     - name: enable user_org_creation
@@ -69,7 +67,7 @@
         admin_password: "{{ cf_admin_password }}"
         api_url: "{{ cf_api }}"
 
-# Default Sec groups
+# Default Security groups
 
     - name: create test-secgroup
       cf_secgroup:
