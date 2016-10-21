@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-ansible-cloudfoundry are modules to manage Cloud Foundry with Ansible
+ansible-cloudfoundry is a set of modules to manage Cloud Foundry with Ansible
 (c) 2016 Jose Riguera Lopez, jose.riguera@springer.com
 
 # This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,6 @@ ansible-cloudfoundry are modules to manage Cloud Foundry with Ansible
 # Python 2 and 3 compatibility
 from __future__ import unicode_literals, print_function
 
-import json
-import base64
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -105,27 +103,27 @@ EXAMPLES = '''
     type: feature_flag
     name: "user_org_creation"
     value: true
-    admin_user: "{{ cf_admin_user }}"
-    admin_password: "{{ cf_admin_password }}"
-    api_url: "{{ cf_api }}"
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
 
 - name: define env variable MY_HOME=Rotterdam on running context
   cf_config:
     type: env_var
     name: "MY_HOME"
     value: "Rotterdam"
-    admin_user: "{{ cf_admin_user }}"
-    admin_password: "{{ cf_admin_password }}"
-    api_url: "{{ cf_api }}"
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
 
 - name: set test-secgroup as default for staging
   cf_config:
     type: sec_group
     name: "test-secgroup"
     context: staging
-    admin_user: "{{ cf_admin_user }}"
-    admin_password: "{{ cf_admin_password }}"
-    api_url: "{{ cf_api }}"
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
 '''
 
 RETURN = '''
