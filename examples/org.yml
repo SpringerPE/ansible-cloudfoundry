@@ -14,7 +14,6 @@
   - name: create org jriguera (again)
     cf_org:
       name: "jriguera"
-      admin_user: "admin"
       quota: "default"
       admin_user: "{{ cf_admin_user }}"
       admin_password: "{{ cf_admin_password }}"
