@@ -1,5 +1,6 @@
 ---
-- hosts: cfclient
+- name: cf_domain module examples
+  hosts: cfclient
   gather_facts: false
   vars:
     cf_domain: "cf.springer-sbm.com"

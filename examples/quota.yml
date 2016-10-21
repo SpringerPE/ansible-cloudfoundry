@@ -1,5 +1,6 @@
 ---
-- hosts: cfclient
+- name: cf_quota module examples
+  hosts: cfclient
   gather_facts: false
 
   tasks:
