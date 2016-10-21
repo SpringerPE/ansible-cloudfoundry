@@ -1,0 +1,109 @@
+---
+- hosts: cfclient
+  gather_facts: false
+  vars:
+    cf_domain: "cf.springer-sbm.com"
+
+  tasks:
+    - name: create shared domain testdomain.{{ cf_domain }}
+      cf_domain:
+        name: "testdomain.{{ cf_domain }}"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create shared domain testdomain.{{ cf_domain }} (again)
+      cf_domain:
+        name: "testdomain.{{ cf_domain }}"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete shared domain testdomain.{{ cf_domain }}
+      cf_domain:
+        name: "testdomain.{{ cf_domain }}"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete shared domain testdomain.{{ cf_domain }} (again)
+      cf_domain:
+        name: "testdomain.{{ cf_domain }}"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create shared domain ttestdomain.{{ cf_domain }}
+      cf_domain:
+        name: "ttestdomain.{{ cf_domain }}"
+        type: shared
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+# Private domains with Orgs
+
+    - name: create org test2
+      cf_org:
+        name: "test2"
+        quota: "default"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create org test
+      cf_org:
+        name: "test"
+        quota: "default"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create private domain ptestdomain.{{ cf_domain }} for test org
+      cf_domain:
+        name: "ptestdomain.{{ cf_domain }}"
+        type: private
+        owner_organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: share domain ptestdomain.{{ cf_domain }} owned by test org with test2 org
+      cf_domain:
+        name: "ptestdomain.{{ cf_domain }}"
+        type: private
+        shared_organization: "test2"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: share domain ptestdomain.{{ cf_domain }} owned by test org with test2 org (again)
+      cf_domain:
+        name: "ptestdomain.{{ cf_domain }}"
+        type: private
+        shared_organization: "test2"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: unshare domain ptestdomain.{{ cf_domain }} owned by test org with test2 org
+      cf_domain:
+        name: "ptestdomain.{{ cf_domain }}"
+        type: private
+        shared_organization: "test2"
+        shared_state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: unshare domain ptestdomain.{{ cf_domain }} owned by test org with test2 org (again)
+      cf_domain:
+        name: "ptestdomain.{{ cf_domain }}"
+        type: private
+        shared_organization: "test2"
+        shared_state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"

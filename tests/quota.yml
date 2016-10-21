@@ -1,0 +1,110 @@
+---
+- hosts: cfclient
+  gather_facts: false
+
+  tasks:
+    - name: create quota test-quota2
+      cf_quota:
+        name: "test-quota2"
+        non_basic_services_allowed: true
+        total_services: 24
+        total_routes: 211
+        memory_limit: 2200
+        instance_memory_limit: 2100
+        total_service_keys: 27
+        total_reserved_route_ports: 28
+        total_private_domains: 29
+        app_instance_limit: 210
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create quota test-quota1
+      cf_quota:
+        name: "test-quota1"
+        non_basic_services_allowed: true
+        total_services: 14
+        total_routes: 111
+        memory_limit: 1200
+        instance_memory_limit: 1100
+        total_service_keys: 17
+        total_reserved_route_ports: 18
+        total_private_domains: 19
+        app_instance_limit: 110
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create quota test-quota
+      cf_quota:
+        name: "test-quota"
+        non_basic_services_allowed: true
+        total_services: 4
+        total_routes: 11
+        memory_limit: 500
+        instance_memory_limit: 100
+        total_service_keys: 7
+        total_reserved_route_ports: 8
+        total_private_domains: 9
+        app_instance_limit: 10
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: update quota test-quota1 3x
+      cf_quota:
+        name: "test-quota1"
+        non_basic_services_allowed: true
+        total_services: 34
+        total_routes: 311
+        memory_limit: 3200
+        instance_memory_limit: 3100
+        total_service_keys: 37
+        total_reserved_route_ports: 38
+        total_private_domains: 39
+        app_instance_limit: 310
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete quota test-quota
+      cf_quota:
+        name: "test-quota"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete quota test-quota (again)
+      cf_quota:
+        name: "test-quota"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+# Orgs
+
+    - name: create quota test
+      cf_quota:
+        name: "test-quota"
+        non_basic_services_allowed: true
+        total_services: 34
+        total_routes: 311
+        memory_limit: 3200
+        instance_memory_limit: 3100
+        total_service_keys: 37
+        total_reserved_route_ports: 38
+        total_private_domains: 39
+        app_instance_limit: 310
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: update/create org test with test-quota
+      cf_org:
+        name: "test"
+        quota: "test-quota"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"

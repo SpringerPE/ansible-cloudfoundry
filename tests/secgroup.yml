@@ -1,0 +1,53 @@
+---
+- hosts: cfclient
+  gather_facts: false
+
+  tasks:
+    - name: create test-secgroup
+      cf_secgroup:
+        name: "test-secgroup"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create test-secgroup (again)
+      cf_secgroup:
+        name: "test-secgroup"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete test-secgroup
+      cf_secgroup:
+        name: "test-secgroup"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create test-secgroup link with test org test space
+      cf_secgroup:
+        name: "test-secgroup"
+        space: "test"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create test-secgroup link with test org test space (again)
+      cf_secgroup:
+        name: "test-secgroup"
+        space: "test"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create test-secgroup link with test org test space (again)
+      cf_secgroup:
+        name: "test-secgroup"
+        space: "test"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"

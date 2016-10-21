@@ -1,0 +1,46 @@
+---
+- hosts: cfclient
+  gather_facts: false
+
+  tasks:
+    - name: create space stest in test org
+      cf_space:
+        name: "stest"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create space stest in test org (again)
+      cf_space:
+        name: "stest"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete space stest
+      cf_space:
+        name: "stest"
+        organization: "test"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete space stest (again)
+      cf_space:
+        name: "stest"
+        organization: "test"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create space test in test org
+      cf_space:
+        name: "test"
+        organization: "test"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"

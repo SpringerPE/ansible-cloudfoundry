@@ -1,0 +1,84 @@
+---
+- hosts: cfclient
+  gather_facts: false
+
+  tasks:
+    - name: create test-rule-secgroup
+      cf_secgroup:
+        name: "test-rule-secgroup"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create rule test-rule-secgroup-8081 in test-rule-secgroup
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        protocol: tcp
+        destination: "127.0.0.1/0"
+        ports: "8081"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: create rule test-rule-secgroup-8081 in test-rule-secgroup (again)
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        protocol: tcp
+        destination: "127.0.0.1/0"
+        ports: "8081"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: update rule test-rule-secgroup-8081 in test-rule-secgroup
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        protocol: tcp
+        destination: "127.1.1.1/0"
+        ports: "8081"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: update rule test-rule-secgroup-8081 in test-rule-secgroup (again)
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        protocol: tcp
+        destination: "127.1.1.1/0"
+        ports: "8081"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete rule test-rule-secgroup-8081 in test-rule-secgroup
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        state: absent
+        protocol: tcp
+        destination: "127.1.1.1/0"
+        ports: "8081"
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete rule test-rule-secgroup-8081 in test-rule-secgroup (again)
+      cf_secgroup_rule:
+        name: "test-rule-secgroup-8081"
+        sec_group: "test-rule-secgroup"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
+
+    - name: delete test-rule-secgroup
+      cf_secgroup:
+        name: "test-rule-secgroup"
+        state: absent
+        admin_user: "{{ cf_admin_user }}"
+        admin_password: "{{ cf_admin_password }}"
+        api_url: "{{ cf_api }}"
