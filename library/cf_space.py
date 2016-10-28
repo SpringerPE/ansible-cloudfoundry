@@ -31,7 +31,7 @@ from cfconfigurator.exceptions import CFException
 
 
 __program__ = "cf_space"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Jose Riguera"
 __year__ = "2016"
 __email__ = "<jose.riguera@springer.com>"
@@ -61,11 +61,27 @@ options:
         description:
             - Name of the organization
         required: true
-    organization:
+    allow_ssh:
         description:
             - Allow ssh
         required: false
         default: false
+    user_name:
+        description:
+            - Name of the user to add/remove to the space
+        required: false
+    user_role:
+        description:
+            - Role of the user in the space
+        required: false
+        default: "user"
+        choices=[user, manager, auditor]
+    user_state:
+        description:
+            - Desired state of the space
+        required: false
+        default: present
+        choices: [present, absent]
     admin_user:
         description:
             - Administrator username/email
@@ -125,8 +141,8 @@ class CF_Space(object):
         api_url = self.module.params['api_url']
         self.name = self.module.params['name']
         try:
-            self.cf = CF(api_url, admin_user, admin_password)
-            self.cf.login()
+            self.cf = CF(api_url)
+            self.cf.login(admin_user, admin_password)
         except CFException as e:
             self.module.fail_json(msg=str(e))
         except Exception as e:
@@ -173,6 +189,13 @@ class CF_Space(object):
         return result
 
     def present(self, space, org_guid):
+        # pre check to see if user exists
+        user = None
+        user_name = self.module.params['user_name']
+        if user_name is not None:
+            user = self.cf.search_user(user_name)
+            if user is None:
+                self.module.fail_json(msg="User %s not found" % (user_name))
         changed = False
         if space is None:
             changed = True
@@ -186,10 +209,7 @@ class CF_Space(object):
             msg = "CF space %s created in %s org" % (self.name, self.oname)
         else:
             guid = space['metadata']['guid']
-            space_items = [
-                'name',
-                'allow_ssh',
-            ]
+            space_items = ['name', 'allow_ssh']
             for item in space_items:
                 if self.module.params[item] != space['entity'][item]:
                     changed = True
@@ -207,8 +227,15 @@ class CF_Space(object):
                 msg = "CF space %s in %s org updated" % (self.name, self.oname)
             else:
                 msg = "CF space %s in %s org no update needed" % (self.name, self.oname)
+        changed_user = False
+        if user is not None:
+            mode = self.module.params['user_state'] == "present"
+            spc_uid = space['metadata']['guid']
+            user_id = user['metadata']['guid']
+            user_role = self.module.params['user_role']
+            changed_user = self.cf.manage_space_users(spc_uid, user_id, user_role, mode)
         result = {
-            'changed': changed,
+            'changed': changed or changed_user,
             'msg': msg,
             'data': space
         }
@@ -225,6 +252,9 @@ def main():
             api_url = dict(required=True, type='str'),
             organization = dict(required=True, type='str'),
             allow_ssh = dict(required=False, default=False, type='bool'),
+            user_name = dict(required=False, type='str'),
+            user_role = dict(default='user', type='str', choices=['user', 'manager', 'auditor']),
+            user_state = dict(default='present', type='str', choices=['present', 'absent']),
             force = dict(default=False, type='bool'),
         ),
         supports_check_mode = True
