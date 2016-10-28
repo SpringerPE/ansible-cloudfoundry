@@ -31,7 +31,7 @@ from cfconfigurator.exceptions import CFException
 
 
 __program__ = "cf_quota"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Jose Riguera"
 __year__ = "2016"
 __email__ = "<jose.riguera@springer.com>"
@@ -160,8 +160,8 @@ class CF_Quota(object):
         api_url = self.module.params['api_url']
         self.name = self.module.params['name']
         try:
-            self.cf = CF(api_url, admin_user, admin_password)
-            self.cf.login()
+            self.cf = CF(api_url)
+            self.cf.login(admin_user, admin_password)
         except CFException as e:
             self.module.fail_json(msg=str(e))
         except Exception as e:

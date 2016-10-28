@@ -31,7 +31,7 @@ from cfconfigurator.exceptions import CFException
 
 
 __program__ = "cf_secgroup_rule"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Jose Riguera"
 __year__ = "2016"
 __email__ = "<jose.riguera@springer.com>"
@@ -154,8 +154,8 @@ class CF_Secgroup_rule(object):
         api_url = self.module.params['api_url']
         self.name = self.module.params['name']
         try:
-            self.cf = CF(api_url, admin_user, admin_password)
-            self.cf.login()
+            self.cf = CF(api_url)
+            self.cf.login(admin_user, admin_password)
         except CFException as e:
             self.module.fail_json(msg=str(e))
         except Exception as e:
@@ -168,7 +168,7 @@ class CF_Secgroup_rule(object):
             sec_group = self.cf.search_secgroup(self.secg_name)
             if not sec_group:
                 self.module.fail_json(msg='Security group not found')
-            mode = True if state == "present" else False
+            mode = state == "present"
             sec_group_guid = sec_group['metadata']['guid']
             result = self.set_sec_group_rule(sec_group_guid, mode)
         except CFException as e:
