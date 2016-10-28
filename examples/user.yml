@@ -1,0 +1,59 @@
+---
+- name: cf_user module examples
+  hosts: cfclient
+  gather_facts: false
+
+  tasks:
+  - name: create user bob
+    cf_user:
+      name: "bob"
+      password: "hola"
+      email: "bob@hola.com"
+      given_name: "Bob"
+      family_name: "SpongeBob"
+      default_organization: test
+      default_space: test
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: create user bob (again)
+    cf_user:
+      name: "bob"
+      password: "hola"
+      email: "bob@hola.com"
+      given_name: "Bob"
+      family_name: "SpongeBob"
+      default_organization: test
+      default_space: test
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: create user trump
+    cf_user:
+      name: "trump@hola.com"
+      password: "adios"
+      given_name: "Donald"
+      family_name: "Trump"
+      default_organization: test
+      default_space: test
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: delete user bob
+    cf_user:
+      name: "bob"
+      state: absent
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+
+  - name: delete user trump
+    cf_user:
+      name: "trump@hola.com"
+      state: absent
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
