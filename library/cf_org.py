@@ -31,7 +31,7 @@ from cfconfigurator.exceptions import CFException
 
 
 __program__ = "cf_org"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Jose Riguera"
 __year__ = "2016"
 __email__ = "<jose.riguera@springer.com>"
@@ -62,6 +62,22 @@ options:
             - Name of the quota asigned to the org
         required: false
         default: "default"
+    user_name:
+        description:
+            - Name of the user to add/remove to the org
+        required: false
+    user_role:
+        description:
+            - Role of the user in the org
+        required: false
+        default: "user"
+        choices=[user, manager, auditor, billing_manager]
+    user_state:
+        description:
+            - Desired state of the org
+        required: false
+        default: present
+        choices: [present, absent]
     admin_user:
         description:
             - Administrator username/email
@@ -96,6 +112,38 @@ EXAMPLES = '''
     admin_user: "admin"
     admin_password: "password"
     api_url: "https://api.test.cf.example.com"
+
+# Warning! In order to add an user as [manager, auditor, billing_manager]
+# first they have to be added as a user!, otherwise the error:
+# CF-InvalidRelation (1002) will appear
+
+- name: create/update org test with bob as user
+  cf_org:
+    name: "test"
+    user_name: "bob"
+    user_role: user
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
+
+- name: promote bob as manager in the test org
+  cf_org:
+    name: "test"
+    user_name: "bob"
+    user_role: manager
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
+
+- name: demote bob as user in the test org (still he is an user)
+  cf_org:
+    name: "test"
+    user_name: "bob"
+    user_role: manager
+    user_state: absent
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
 '''
 
 RETURN = '''
@@ -113,8 +161,8 @@ class CF_Org(object):
         api_url = self.module.params['api_url']
         self.name = self.module.params['name']
         try:
-            self.cf = CF(api_url, admin_user, admin_password)
-            self.cf.login()
+            self.cf = CF(api_url)
+            self.cf.login(admin_user, admin_password)
         except CFException as e:
             self.module.fail_json(msg=str(e))
         except Exception as e:
@@ -135,8 +183,7 @@ class CF_Org(object):
             elif state == 'absent':
                 if self.name in self.system_orgs and not force:
                     self.module.fail_json(msg="Cannot delete a system org")
-                recursive = self.module.params['force']
-                result = self.absent(org, recursive)
+                result = self.absent(org, force)
             else:
                 self.module.fail_json(msg='Invalid state: %s' % state)
         except CFException as e:
@@ -163,6 +210,13 @@ class CF_Org(object):
         return result
 
     def present(self, org, quota_guid):
+        # pre check to see if user exists
+        user = None
+        user_name = self.module.params['user_name']
+        if user_name is not None:
+            user = self.cf.search_user(user_name)
+            if user is None:
+                self.module.fail_json(msg="User %s not found" % (user_name))
         changed = False
         if org is None:
             changed = True
@@ -186,8 +240,15 @@ class CF_Org(object):
                 msg = "CF org %s updated" % self.name
             else:
                 msg = "CF org %s not updated" % self.name
+        changed_user = False
+        if user is not None:
+            mode = self.module.params['user_state'] == "present"
+            org_uid = org['metadata']['guid']
+            user_id = user['metadata']['guid']
+            user_role = self.module.params['user_role']
+            changed_user = self.cf.manage_organization_users(org_uid, user_id, user_role, mode)
         result = {
-            'changed': changed,
+            'changed': changed or changed_user,
             'msg': msg,
             'data': org
         }
@@ -203,6 +264,9 @@ def main():
             admin_password  = dict(required=True, type='str', no_log=True),
             api_url = dict(required=True, type='str'),
             quota = dict(default='default', type='str'),
+            user_name = dict(required=False, type='str'),
+            user_role = dict(default='user', type='str', choices=['user', 'manager', 'auditor', 'billing_manager']),
+            user_state = dict(default='present', type='str', choices=['present', 'absent']),
             validate_certs = dict(default=False, type='bool'),
             force = dict(default=False, type='bool'),
         ),
