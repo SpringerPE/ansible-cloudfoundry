@@ -13,6 +13,7 @@ Current available modules make possible to manage:
 * **cf_secgroup**: Security groups
 * **cf_secgroup_rule**: Security group rules
 * **cf_user**: Manage CF users via UAA
+* **cf_org_facts**: Get facts from a CF Org or Space
 
 They depend on https://github.com/SpringerPE/python-cfconfigurator ,
 just install it via pip.
