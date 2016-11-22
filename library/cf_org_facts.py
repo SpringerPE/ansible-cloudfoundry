@@ -91,109 +91,109 @@ EXAMPLES = '''
 RETURN = '''
     {
         "ansible_facts": {
-            "allow_ssh": false, 
-            "created_at": "2016-11-17T14:42:45Z", 
-            "guid": "ea12517c-2610-4294-a291-e1aa0af9b170", 
-            "name": "test", 
-            "quota": {}, 
+            "allow_ssh": false,
+            "created_at": "2016-11-17T14:42:45Z",
+            "guid": "ea12517c-2610-4294-a291-e1aa0af9b170",
+            "name": "test",
+            "quota": {},
             "sec_groups": [
                 {
-                    "created_at": "2016-11-08T14:30:40Z", 
-                    "guid": "2f757c5f-9a02-47b5-a467-96f1a45e8882", 
-                    "name": "public_networks", 
+                    "created_at": "2016-11-08T14:30:40Z",
+                    "guid": "2f757c5f-9a02-47b5-a467-96f1a45e8882",
+                    "name": "public_networks",
                     "rules": [
                         {
-                            "destination": "0.0.0.0-9.255.255.255", 
+                            "destination": "0.0.0.0-9.255.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "11.0.0.0-169.253.255.255", 
+                            "destination": "11.0.0.0-169.253.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "169.255.0.0-172.15.255.255", 
+                            "destination": "169.255.0.0-172.15.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "172.32.0.0-192.167.255.255", 
+                            "destination": "172.32.0.0-192.167.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "192.169.0.0-255.255.255.255", 
+                            "destination": "192.169.0.0-255.255.255.255",
                             "protocol": "all"
                         }
-                    ], 
-                    "running_default": true, 
-                    "staging_default": true, 
+                    ],
+                    "running_default": true,
+                    "staging_default": true,
                     "updated_at": null
-                }, 
+                },
                 {
-                    "created_at": "2016-11-08T14:30:40Z", 
-                    "guid": "9b40d9b3-77c7-45e1-96ea-5f41de72fd09", 
-                    "name": "dns", 
+                    "created_at": "2016-11-08T14:30:40Z",
+                    "guid": "9b40d9b3-77c7-45e1-96ea-5f41de72fd09",
+                    "name": "dns",
                     "rules": [
                         {
-                            "destination": "0.0.0.0/0", 
-                            "ports": "53", 
+                            "destination": "0.0.0.0/0",
+                            "ports": "53",
                             "protocol": "tcp"
-                        }, 
+                        },
                         {
-                            "destination": "0.0.0.0/0", 
-                            "ports": "53", 
+                            "destination": "0.0.0.0/0",
+                            "ports": "53",
                             "protocol": "udp"
                         }
-                    ], 
-                    "running_default": true, 
-                    "staging_default": true, 
+                    ],
+                    "running_default": true,
+                    "staging_default": true,
                     "updated_at": null
-                }, 
+                },
                 {
-                    "created_at": "2016-11-08T14:30:40Z", 
-                    "guid": "dc52eaf9-068b-4b53-bc52-c1334266dbc9", 
-                    "name": "private_networks", 
+                    "created_at": "2016-11-08T14:30:40Z",
+                    "guid": "dc52eaf9-068b-4b53-bc52-c1334266dbc9",
+                    "name": "private_networks",
                     "rules": [
                         {
-                            "destination": "10.0.0.0-10.255.255.255", 
+                            "destination": "10.0.0.0-10.255.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "172.16.0.0-172.31.255.255", 
+                            "destination": "172.16.0.0-172.31.255.255",
                             "protocol": "all"
-                        }, 
+                        },
                         {
-                            "destination": "192.168.0.0-192.168.255.255", 
+                            "destination": "192.168.0.0-192.168.255.255",
                             "protocol": "all"
                         }
-                    ], 
-                    "running_default": true, 
-                    "staging_default": false, 
+                    ],
+                    "running_default": true,
+                    "staging_default": false,
                     "updated_at": null
-                }, 
+                },
                 {
-                    "created_at": "2016-11-22T15:46:08Z", 
-                    "guid": "baf4373c-8897-4371-848a-5bbfb4e7e758", 
-                    "name": "sec1", 
+                    "created_at": "2016-11-22T15:46:08Z",
+                    "guid": "baf4373c-8897-4371-848a-5bbfb4e7e758",
+                    "name": "sec1",
                     "rules": [
                         {
-                            "description": "allow-proxy", 
-                            "destination": "127.0.0.1/0", 
-                            "log": false, 
-                            "ports": "8081", 
+                            "description": "allow-proxy",
+                            "destination": "127.0.0.1/0",
+                            "log": false,
+                            "ports": "8081",
                             "protocol": "tcp"
                         }
-                    ], 
-                    "running_default": true, 
-                    "staging_default": false, 
+                    ],
+                    "running_default": true,
+                    "staging_default": false,
                     "updated_at": "2016-11-22T15:46:12Z"
                 }
-            ], 
-            "updated_at": null, 
+            ],
+            "updated_at": null,
             "users": {
-                "auditors": [], 
-                "developers": [], 
+                "auditors": [],
+                "developers": [],
                 "managers": []
             }
-        }, 
+        },
         "changed": false
     }
 '''
@@ -330,7 +330,7 @@ class CF_Org_Facts(object):
                             facts['users'][user_type] = []
                         user_url = user_type + '_url'
                         if user_url in org['entity']:
-                            facts['users'][user_type].append(self.get_users(org['entity'][user_url]))
+                            facts['users'][user_type] = self.get_users(org['entity'][user_url])
                     domains = self.get_private_domains(org['entity']['private_domains_url'], facts['guid'])
                     facts.update(domains)
         except CFException as e:
