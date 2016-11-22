@@ -90,3 +90,13 @@
       admin_user: "{{ cf_admin_user }}"
       admin_password: "{{ cf_admin_password }}"
       api_url: "{{ cf_api }}"
+
+  - name: facts
+    cf_org_facts:
+      name: "test2"
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+    register: result
+
+  - debug: msg="{{ result }}"
