@@ -175,11 +175,7 @@ class CF_Org(object):
             org = self.cf.search_org(self.name)
             if state == 'present':
                 quota_name = self.module.params['quota']
-                quota = self.cf.search_quota(quota_name)
-                if not quota:
-                    self.module.fail_json(msg="Quota %s not found" % quota_name)
-                quota_guid = quota['metadata']['guid']
-                result = self.present(org, quota_guid)
+                result = self.present(org, quota_name)
             elif state == 'absent':
                 if self.name in self.system_orgs and not force:
                     self.module.fail_json(msg="Cannot delete a system org")
@@ -209,7 +205,7 @@ class CF_Org(object):
         }
         return result
 
-    def present(self, org, quota_guid):
+    def present(self, org, quota_name):
         # pre check to see if user exists
         user = None
         user_name = self.module.params['user_name']
@@ -219,6 +215,12 @@ class CF_Org(object):
                 self.module.fail_json(msg="User %s not found" % (user_name))
         changed = False
         if org is None:
+            if quota_name is None:
+                quota_name = 'default'
+            quota = self.cf.search_quota(quota_name)
+            if not quota:
+                self.module.fail_json(msg="Quota %s not found" % quota_name)
+            quota_guid = quota['metadata']['guid']
             changed = True
             if not self.module.check_mode:
                 try:
@@ -228,8 +230,15 @@ class CF_Org(object):
                     self.module.fail_json(msg=msg)
             msg = "CF org %s created" % self.name
         else:
+            if quota_name is None:
+                quota_guid = None
+            else:
+                quota = self.cf.search_quota(quota_name)
+                if not quota:
+                    self.module.fail_json(msg="Quota %s not found" % quota_name)
+                quota_guid = quota['metadata']['guid']
             guid = org['metadata']['guid']
-            if org['entity']['quota_definition_guid'] != quota_guid:
+            if quota_guid is not None and org['entity']['quota_definition_guid'] != quota_guid:
                 changed = True
                 if not self.module.check_mode:
                     try:
@@ -263,7 +272,7 @@ def main():
             admin_user = dict(required=True, type='str'),
             admin_password  = dict(required=True, type='str', no_log=True),
             api_url = dict(required=True, type='str'),
-            quota = dict(default='default', type='str'),
+            quota = dict(type='str'),
             user_name = dict(required=False, type='str'),
             user_role = dict(default='user', type='str', choices=['user', 'manager', 'auditor', 'billing_manager']),
             user_state = dict(default='present', type='str', choices=['present', 'absent']),
