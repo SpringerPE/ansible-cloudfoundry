@@ -253,7 +253,7 @@ def main():
             organization = dict(required=True, type='str'),
             allow_ssh = dict(required=False, default=False, type='bool'),
             user_name = dict(required=False, type='str'),
-            user_role = dict(default='user', type='str', choices=['user', 'manager', 'auditor']),
+            user_role = dict(default='developer', type='str', choices=['developer', 'manager', 'auditor']),
             user_state = dict(default='present', type='str', choices=['present', 'absent']),
             force = dict(default=False, type='bool'),
         ),
