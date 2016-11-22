@@ -88,7 +88,7 @@ options:
         default: false
     force:
         description:
-            - Force deletion of system org and recursive entities in an org
+            - Force deletion of a user or password update
         required: false
         default: false
 '''
