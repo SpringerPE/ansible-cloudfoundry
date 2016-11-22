@@ -1,0 +1,23 @@
+---
+# Security groups
+
+- name: "Secgroups - Setting global security groups"
+  include: secgroup.yml
+  with_items: "{{ cf_security_groups | default([]) }}"
+  loop_control:
+    loop_var: cf_secgroup
+
+- name: "Secgroups - Managing default security groups"
+  cf_config:
+    type: sec_group
+    context: "{{ item.context }}"
+    name: "{{ item.name }}"
+    state: "{{ item.context_state | default('present') }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  when: >
+    item.context is defined and item.context and
+    (item.state is not defined or (item.state is defined and item.state == 'present'))
+  with_items: "{{ cf_security_groups | default([]) }}"
+

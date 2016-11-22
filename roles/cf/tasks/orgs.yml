@@ -1,0 +1,9 @@
+---
+# Orgs
+
+- name: "Orgs - Setting up organizations"
+  include: org.yml
+  with_items: "{{ cf_orgs | default([]) }}"
+  loop_control:
+    loop_var: cf_organization
+

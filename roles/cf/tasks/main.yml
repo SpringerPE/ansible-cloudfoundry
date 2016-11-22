@@ -1,0 +1,20 @@
+---
+- include: pip.yml
+  tags: ["cf", "pip", "install"]
+
+- include: config.yml
+  tags: ["cf", "config"]
+
+- include: secgroups.yml
+  tags: ["cf", "secgroups"]
+
+- include: quotas.yml
+  tags: ["cf", "quotas"]
+
+- include: users.yml
+  tags: ["cf", "users"]
+
+- include: orgs.yml
+  tags: ["cf", "orgs"]
+
+

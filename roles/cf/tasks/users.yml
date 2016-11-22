@@ -1,0 +1,18 @@
+---
+# Users
+
+- name: "Users - Managing users"
+  cf_user:
+      name: "{{ item.name }}"
+      state: "{{ item.state | default('present') }}"
+      password: "{{ item.password }}"
+      active: "{{ item.active | default('true') }}"
+      force: "{{ item.force | default('false') }}"
+      email: "{{ item.email | default(omit) }}"
+      given_name: "{{ item.given_name | default(omit) }}"
+      family_name: "{{ item.family_name | default(omit) }}"
+      admin_user: "{{ cf_admin_user }}"
+      admin_password: "{{ cf_admin_password }}"
+      api_url: "{{ cf_api }}"
+  with_items: "{{ cf_users }}"
+

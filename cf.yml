@@ -1,0 +1,7 @@
+---
+- name: cf playbook
+  hosts: cfclient
+  gather_facts: false
+
+  roles:
+  - role: cf

@@ -1,0 +1,10 @@
+---
+# pip dependencies
+
+- name: Check PIP dependencies for ansible modules
+  become: true
+  pip:
+    name: "{{ item.key }}"
+    version: "{{ item.value }}"
+  with_dict: "{{ cf_pip_dependencies }}"
+

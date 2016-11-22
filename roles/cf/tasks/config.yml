@@ -1,0 +1,46 @@
+---
+# Global configuration settings
+
+- name: "Config - Set global feature flags"
+  cf_config:
+    type: feature_flag
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  with_items: "{{ cf_feature_flags | default([]) }}"
+
+- name: "Config - Set global running environment variables group"
+  cf_config:
+    type: env_var
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    context: running
+    state: "{{ item.state | default('present') }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  with_items: "{{ cf_running_environment_variables | default([]) }}"
+
+- name: "Config - Set global staging environment variables group"
+  cf_config:
+    type: env_var
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    context: staging
+    state: "{{ item.state | default('present') }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  with_items: "{{ cf_staging_environment_variables | default([]) }}"
+
+- name: "Config - Set global shared domains"
+  cf_domain:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  with_items: "{{ cf_shared_domains | default([]) }}"
+

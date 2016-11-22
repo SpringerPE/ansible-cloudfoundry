@@ -1,0 +1,209 @@
+---
+### Define feature flags.
+# Parameters:
+#      name
+#      value {true|false}
+#
+# With feature flags, you can manage settings like:
+#      user_org_creation
+#      private_domain_creation
+#      diego_docker
+#      env_var_visibility
+# https://docs.cloudfoundry.org/adminguide/listing-feature-flags.html
+
+cf_feature_flags: []
+
+
+### Define environment variables groups.
+# Parameters:
+#      name
+#      value
+#      [state =present {present, absent}]
+#
+# Use the 'state' parameter to delete an env-var (state=absent), in that case
+# 'value' becomes an optional parameter and is not needed to be provided
+#
+# WARNING Do not modify the name of a environment variable, because it
+# will add a new one to the group, it will not update the name of the var.
+# The name is a reference, so if you want to change the name, first
+# ou have to set the state to 'absent', run ansible, and then change the name
+# and remove the state or set it up to 'present'
+
+cf_staging_environment_variables: []
+
+cf_running_environment_variables: []
+
+
+### Define global shared domains
+# Parameters:
+#    - name
+#      [state =present {present, absent}]
+#
+# List of domains available in CF
+
+cf_shared_domains: []
+
+
+### Define global security groups
+# Parameters:
+#    - name
+#      [state =present {present, absent}]
+#      [context =null {running, staging}]
+#      [context_state =present {present, absent}]
+#      rules:
+#        - name
+#          [protocol =all {tcp, icmp, udp, all}]
+#          [destination =0.0.0.0/0]
+#          [ports]
+#          [log =false]
+#          [code]
+#          [type]
+#
+# ASGs are a collection of egress rules that specify one or
+# more individual protocols, ports, and destinations to allow
+# network access to.
+#
+# https://docs.cloudfoundry.org/adminguide/app-sec-groups.html
+#
+# These security groups are not attached to a space, but they can be referenced
+# by name in each space. 'code' and 'type' are only valid when protocol is
+# 'icmp'. 'log' is to tell the CF logger to trace the packages which match the
+# rule.
+#
+# WARNING: order is important when the context is specified!
+#
+# WARNING Do not modify the name of a security group rule, because it
+# will add the new rule to the list, it will not update the name of the rule
+# The name of the rule is a reference, so if you want to change the name, first
+# you have to set the state to 'absent', run ansible, and then change the name
+# and remove the state or set it up to 'present'
+
+cf_security_groups: []
+
+
+### Define quotas
+# Parameters:
+#    - name
+#      [state =present {present, absent}]
+#      total_services
+#      total_routes
+#      memory_limit
+#      [non_basic_services_allowed =true]
+#      [instance_memory_limit =-1]
+#      [total_service_keys]
+#      [total_reserved_route_ports]
+#      [total_private_domains]
+#      [app_instance_limit]
+#
+# Docs: https://docs.cloudfoundry.org/adminguide/quota-plans.html
+
+cf_quotas: []
+
+
+### Define global users of the platform
+# Parameters:
+#      name
+#      password
+#      [state =present {present, absent}]
+#      [active =true]
+#      [force =false]
+#      [email]
+#      [given_name]
+#      [family_name]
+#      [default_organization & default_space]
+#
+# Use the 'state' parameter to delete an user (state=absent), and the 'active'
+# to enable or disable. Password will not be updated unless you specify the
+# parameter 'force'. With force=true and state=absent the user will be deleted
+# and all of their resources, otherwise the deletion can fail if there are
+# objects property of the user.
+# An email is always needed, if you do not know the name, use the email.
+#
+# WARNING: default_organization and default_space have to be specified together
+# and if the organization does not exits it will be ignored (ansible will not
+# fail).
+
+cf_users: []
+
+
+### Define organizations, spaces and links with users and quotas
+# Parameters:
+#      name
+#      [state =present {present, absent}]
+#      [force =false]
+#      [quota =default]
+#      [domains_private =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [domains_borrowed =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [users =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [managers =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [auditors =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [billing_managers =[]]
+#        - name
+#          [state =present {present, absent}]
+#      [spaces =[]]
+#        - name
+#          [state =present {present, absent}]
+#          [allow_ssh =false]
+#          [force =false]
+#          [security_groups =[]]
+#            - [name]
+#              [state =present {present, absent}]
+#              [rules =[]]
+#          [developers =[]]
+#            - name
+#              [state =present]
+#          [managers =[]]
+#            - name
+#              [state =present]
+#          [auditors =[]]
+#            - name
+#              [state =present]
+#
+# Use the 'state' parameter to delete an organization (or space)  with 
+# state=absent. Deleting an org/space with objects (apps, routes, ...) will fail
+# unless you first delete the resources or use the parameter 'force' to perform
+# a recursive delete of all objects.
+#
+# Users of spaces are different than users of the organization. For example,
+# an user of the organization in order to be a manager, they first need to be a
+# regular user, but in a space, a user can become directly a manager without
+# even being a user of the organization. This situation is handled automatically
+# by the role, so there is no need to repeat the manager/auditor/billing_manager
+# in the users list.
+#
+# Domains can be privated or shared. A private domain is owned by the
+# organization and it can be shared with other organizations. Be aware that the
+# list of organizations is processed in order, so if an organization needs to
+# borrow a private domain from other organization (then it becomes a shared
+# private domain), first it has to be created in the owner organization, so it
+# has to be first in the processing list.
+#
+# WARNING: security groups can be refereced by the 'name' of the global ones
+# previously defined, in this case, 'state' only defines the asignation to each
+# space (be aware that removing a security group from the list is not going to
+# change the assigment in CF, first you have to set 'state=absent' in the
+# security group parametes in the organization and run asible once).
+# If you  specify rules in the parameters, a new security group will be created
+# (you do not need to specify a name in this case, one will be created with the
+# prefix 'auto.<org>-<space>.<index>). Security groups created within the
+# organization will be deleted when the organization is deleted (they are
+# attached to organization lifecycle)
+#
+# WARNING: do not modify the name of a organization and/or space, because it
+# will add a new org or rule to CF, it will not update the name of the entity.
+# The name of the org/space is a reference, so if you want to change the name,
+# first you have to set the state to 'absent', run ansible, and then change the
+# name and remove the state or set it up to 'present'. All apps, routes, etc
+# will be deleted!
+
+cf_orgs: []

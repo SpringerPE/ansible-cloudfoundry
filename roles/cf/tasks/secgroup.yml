@@ -1,0 +1,63 @@
+---
+# Input iteration variable: cf_secgroup
+
+- name: "Secgroup - Procesing security group {{ cf_secgroup.name | default(cf_secgroup_name) }}"
+  set_fact:
+    _secgroup_name: "{{ cf_secgroup.name | default(cf_secgroup_name) }}"
+    _secgroup_state: "{{ cf_secgroup.state | default('present') }}"
+    _secgroup_rules: "{{ cf_secgroup.rules | default([]) }}"
+    _secgroup_space: "{{ cf_secgroup_space | default(None) }}"
+    _secgroup_organization: "{{ cf_secgroup_organization | default(None) }}"
+    _secgroup_space_state: "{{ cf_secgroup.state if cf_secgroup.state is defined else cf_secgroup_space_state | default('present') }}"
+    _secgroup_predefined: "{{ not (cf_secgroup_organization is defined and cf_secgroup_organization and cf_secgroup_space and cf_secgroup_space) }}"
+
+# Clean other input variables
+- name: "Secgroup - Facts"
+  set_fact:
+   cf_secgroup_name: null
+   cf_secgroup_space: null
+   cf_secgroup_organization: null
+   cf_secgroup_space_state: present
+
+
+
+# This is executed with we have a list of security groups
+- name: "Secgroup - Managing security group {{ _secgroup_name }}: {{ _secgroup_state }}"
+  cf_secgroup:
+    name: "{{ _secgroup_name }}"
+    state: "{{ _secgroup_state }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  when: _secgroup_predefined
+
+- name: "Secgroup - Setting up security group rules"
+  cf_secgroup_rule:
+    name: "{{ item.1.name | default('%s-%s' % (_secgroup_name, item.0)) }}"
+    state: "{{ item.1.state | default('present') }}"
+    sec_group: "{{ _secgroup_name }}"
+    protocol: "{{ item.1.protocol | default(omit) }}"
+    destination: "{{ item.1.destination | default(omit) }}"
+    ports: "{{ item.1.ports | default(omit) }}"
+    log: "{{ item.1.log | default(omit) }}"
+    code: "{{ item.1.code | default(omit) }}"
+    type: "{{ item.1.type | default(omit) }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  with_indexed_items: "{{ _secgroup_rules }}"
+  when: _secgroup_rules and _secgroup_state == 'present' and _secgroup_space_state == 'present'
+
+# This is executed when the security group is attached to a space, so if
+# the space is deleted, then it will be deleted.
+- name: "Secgroup - Managing {{ _secgroup_name }} in space {{ _secgroup_space | default(omit) }}"
+  cf_secgroup:
+    name: "{{ _secgroup_name }}"
+    space: "{{ _secgroup_space }}"
+    space_state: "{{ _secgroup_space_state }}"
+    organization: "{{ _secgroup_organization }}"
+    admin_user: "{{ cf_admin_user }}"
+    admin_password: "{{ cf_admin_password }}"
+    api_url: "{{ cf_api }}"
+  when: not _secgroup_predefined
+
