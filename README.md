@@ -1,4 +1,11 @@
-# ansible-modules-cloudfoundry
+# ansible-cloudfoundry
+
+ClouFoundry resource automation using Ansible
+
+
+## Components
+
+### `library`
 
 Set of Ansible modules to manage Cloud Foundry configuration entities,
 not aimed to manage apps, routes, service brokers, etc.
@@ -25,9 +32,26 @@ pip install -r requirements.txt
 For examples, have a look at `examples` folder.
 
 
-## TODO
+### `role`
 
-Buildpack management
+Ansible role which makes use of the previous modules to perform a set
+of tasks to defice CF resources as described in the manifest.
+
+
+### `inventory`
+
+Folder with the variables needed to set-up on each CF environment.
+Have a look at the Readme in the folder, to see how to operate.
+
+
+### `cf.yml`
+
+Ansible playbook to run.
+
+```
+ansible-playbook -i inventory/test.ini cf.yml
+```
+
 
 
 ## Author
