@@ -37,6 +37,8 @@
     with_items: "{{ _organization_spaces }}"
     loop_control:
       loop_var: cf_space
+    delegate_to: "{{ groups.client[0] }}"
+    tags: ["cf", "space"]
 
   when: _organization_state == 'present'
 
@@ -50,6 +52,8 @@
     with_items: "{{ _organization_spaces }}"
     loop_control:
       loop_var: cf_space
+    delegate_to: "{{ groups.client[0] }}"
+    tags: ["cf", "space"]
 
   - name: "Org - Deleting organization {{ _organization_name }}"
     cf_org:

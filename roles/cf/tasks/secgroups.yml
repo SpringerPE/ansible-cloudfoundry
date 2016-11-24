@@ -6,6 +6,7 @@
   with_items: "{{ cf_security_groups | default([]) }}"
   loop_control:
     loop_var: cf_secgroup
+  delegate_to: "{{ groups.client[0] }}"
 
 - name: "Secgroups - Managing default security groups"
   cf_config:

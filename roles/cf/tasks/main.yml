@@ -1,20 +1,24 @@
 ---
 - include: pip.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "pip", "install"]
 
 - include: config.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "config"]
 
 - include: secgroups.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "secgroups"]
 
 - include: quotas.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "quotas"]
 
 - include: users.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "users"]
 
 - include: orgs.yml
+  delegate_to: "{{ groups.client[0] }}"
   tags: ["cf", "orgs"]
-
-

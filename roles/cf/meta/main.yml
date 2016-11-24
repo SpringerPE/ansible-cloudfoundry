@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  author: Springer Nature Platform Engineering, Jose Riguera Lopez
+  company: Springer Nature
+  description: Configures users, security groups, environment variables, domains, organizations and spaces in Cloud Foundry
+  license: Apache 2.0
+  min_ansible_version: 2.0
+
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: Centos
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+
+  categories:
+    - cloud
+    - CloudFoundry
+
+dependencies: []
+

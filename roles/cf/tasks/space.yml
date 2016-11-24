@@ -43,6 +43,8 @@
     with_indexed_items: "{{ _space_security_groups }}"
     loop_control:
       loop_var: _secgroup
+    delegate_to: "{{ groups.client[0] }}"
+    tags: ["cf", "secgroup"]
 
   - name: "Space - Assigning developers to {{ _space_organization_name }}:{{ _space_name }}"
     cf_space:

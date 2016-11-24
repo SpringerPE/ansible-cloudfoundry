@@ -6,4 +6,6 @@
   with_items: "{{ cf_orgs | default([]) }}"
   loop_control:
     loop_var: cf_organization
+  delegate_to: "{{ groups.client[0] }}"
+  tags: ["cf", "org"]
 
