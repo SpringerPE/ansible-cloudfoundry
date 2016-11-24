@@ -1,6 +1,7 @@
 ---
 - name: cf playbook
-  hosts: cfclient
+  hosts: cf
+  serial: 1
   gather_facts: false
 
   roles:
