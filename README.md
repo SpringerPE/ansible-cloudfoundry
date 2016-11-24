@@ -1,6 +1,8 @@
 # ansible-cloudfoundry
 
-ClouFoundry resource automation using Ansible
+Cloud Foundry resource automation using Ansible
+
+https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/group_vars/test.yml
 
 
 ## Components
