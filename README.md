@@ -41,7 +41,7 @@ of tasks to defice CF resources as described in the manifest.
 ### `inventory`
 
 Folder with the variables needed to set-up on each CF environment.
-Have a look at the Readme in the folder, to see how to operate.
+Have a look at the [Readme in the folder](https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/Readme.md), to see how to operate.
 
 
 ### `cf.yml`
