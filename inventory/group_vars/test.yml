@@ -1,4 +1,18 @@
 ---
+# This file defines all the resources managed with Ansible in Cloud Foundry.
+#
+# Resources are created in the order defined here, so adding new ones is 
+# as easy as define them in this manifest, but when you want to DELETE a 
+# set of different resources, you have to be aware of the relations between
+# them. For example: imagine you want to delete an organization, a quota
+# defined for this organization, the users and the security groups, it is
+# not possible to do it in one shot. In this case, first you have to
+# set the organization to 'absent', run ansible, and then set the users,
+# quotas and security groups to 'absent' and run again. You cannot delete
+# resources if they have relations with other entities (with the exception
+# of organizations and spaces by using the 'force' parameter.
+
+
 ### Define feature flags.
 # Parameters:
 #      name
