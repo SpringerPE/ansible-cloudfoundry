@@ -2,7 +2,20 @@
 
 Cloud Foundry resource automation using Ansible
 
-https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/group_vars/test.yml
+Have a look at the file:
+https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/group_vars/cf.yml
+to see how to define the resources: feature flags, domains, security groups, quotas,
+environment variables, users, organizations and spaces.
+
+You can manage different Cloud Foundry environments by using inventory
+files: https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/cf.ini
+
+Once CF credentials are defined in the inventory and the resources in the manifest,
+just run ansible:
+
+```
+ansible-playbook -i inventoy/cf.ini cf.yml
+```
 
 
 ## Components
