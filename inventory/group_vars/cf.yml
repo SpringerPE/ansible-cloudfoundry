@@ -55,9 +55,7 @@ cf_running_environment_variables: []
 #
 # List of domains available in CF
 
-cf_shared_domains:
-  - name: jriguera.cf.springer-sbm.com
-    state: present
+cf_shared_domains: []
 
 
 ### Define global security groups
