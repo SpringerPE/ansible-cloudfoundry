@@ -1,5 +1,5 @@
 ---
-# This file defines all the resources managed with Ansible in Cloud Foundry.
+# This manifest file defines all the resources managed with Ansible in Cloud Foundry.
 #
 # Resources are created in the order defined here, so adding new ones is 
 # as easy as define them in this manifest, but when you want to DELETE a 
@@ -25,9 +25,7 @@
 #      env_var_visibility
 # https://docs.cloudfoundry.org/adminguide/listing-feature-flags.html
 
-cf_feature_flags:
-  - name: user_org_creation
-    value: true
+cf_feature_flags: []
 
 
 ### Define environment variables groups.
@@ -47,11 +45,7 @@ cf_feature_flags:
 
 cf_staging_environment_variables: []
 
-cf_running_environment_variables:
-  - name: HOLA
-    value: hola
-  - name: ADIOS
-    value: bye
+cf_running_environment_variables: []
 
 
 ### Define global shared domains
@@ -100,23 +94,8 @@ cf_shared_domains:
 # you have to set the state to 'absent', run ansible, and then change the name
 # and remove the state or set it up to 'present'
 
-cf_security_groups:
-  - name: sec1
-    state: present
-    context: running
-    context_state: present
-    rules:
-    - name: "allow-proxy"
-      protocol: tcp
-      destination: "10.20.0.1/0"
-      ports: "8080"
-  - name: sec2
-    state: present
-    rules:
-    - name: "allow-proxy2"
-      protocol: tcp
-      destination: "10.30.0.1/0"
-      ports: "8080"
+cf_security_groups: []
+
 
 ### Define quotas
 # Parameters:
@@ -134,12 +113,7 @@ cf_security_groups:
 #
 # Docs: https://docs.cloudfoundry.org/adminguide/quota-plans.html
 
-cf_quotas:
-  - name: quota1
-    state: present
-    total_services: 100
-    total_routes: 1000
-    memory_limit: 1000
+cf_quotas: []
 
 
 ### Define global users of the platform
@@ -165,12 +139,7 @@ cf_quotas:
 # and if the organization does not exits it will be ignored (ansible will not
 # fail).
 
-cf_users:
-  - name: pepe@hola.com
-    state: present
-    password: hola
-    given_name: Pepe
-    family_name: Family
+cf_users: []
 
 
 ### Define organizations, spaces and links with users and quotas
@@ -253,23 +222,4 @@ cf_users:
 # name and remove the state or set it up to 'present'. All apps, routes, etc
 # will be deleted!
 
-cf_orgs:
-  - name: org1
-    quota: quota1
-    state: present
-    users:
-    - name: pepe@hola.com
-    spaces:
-    - name: test
-    - name: second
-  - name: org2
-    state: present
-    quota: quota1
-    spaces:
-    - name: live
-      state: absent
-      managers:
-      - name: pepe@hola.com
-      security_groups:
-        - name: sec1
-          state: present
+cf_orgs: []
