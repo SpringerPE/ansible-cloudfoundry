@@ -8,14 +8,19 @@ to see how to define the resources: feature flags, domains, security groups, quo
 environment variables, users, organizations and spaces.
 
 You can manage different Cloud Foundry environments by using inventory
-files: https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/cf.ini
+files like this one: https://github.com/SpringerPE/ansible-cloudfoundry/blob/master/inventory/cf.ini
+It makes possible to define some common global configuration variables by splitting
+them in different files (Ansible superpower!)
 
-Once CF credentials are defined in the inventory and the resources in the manifest,
+Once the CF credentials are defined in the inventory and the resources in the manifest,
 just run ansible:
 
 ```
-ansible-playbook -i inventoy/cf.ini cf.yml
+ansible-playbook -i inventory/cf.ini cf.yml
 ```
+
+and done!
+
 
 
 ## Components
