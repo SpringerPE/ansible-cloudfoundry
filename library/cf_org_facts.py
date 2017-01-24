@@ -27,8 +27,13 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 from ansible.module_utils.basic import AnsibleModule
 
-from cfconfigurator.cf import CF
-from cfconfigurator.exceptions import CFException
+try:
+    from cfconfigurator.cf import CF
+    from cfconfigurator.exceptions import CFException
+except ImportError:
+    cfconfigurator_found = False
+else:
+    cfconfigurator_found = True
 
 
 __program__ = "cf_org_facts"
@@ -48,13 +53,13 @@ author: "Jose Riguera, jose.riguera@springer.com"
 options:
     name:
         description:
-            - Name of the org
-        required: true
+            - Name of the org to retrieve facts for, if omitted will return a list of all orgs the given user has access to
+        required: false
         default: null
         aliases: [id]
     space:
         description:
-            - Name of the space within the org
+            - Name of the space within the org to retrive facts for
         required: false
         default: null
     admin_user:
@@ -79,9 +84,16 @@ options:
 '''
 
 EXAMPLES = '''
-- name: create org test with default quotas
+- name: retrive facts about an org called 'test'
   cf_org_facts:
     name: "test"
+    admin_user: "admin"
+    admin_password: "password"
+    api_url: "https://api.test.cf.example.com"
+  register: result
+
+- name: retrive a list of all available org names
+  cf_org_facts:
     admin_user: "admin"
     admin_password: "password"
     api_url: "https://api.test.cf.example.com"
@@ -89,6 +101,7 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
+    # Response for Example 1
     {
         "ansible_facts": {
             "allow_ssh": false,
@@ -196,6 +209,14 @@ RETURN = '''
         },
         "changed": false
     }
+
+    # Response for Example 2
+    {
+        "ansible_facts": {
+            "orgs": []
+        },
+        "changed": false
+    }
 '''
 
 
@@ -213,6 +234,14 @@ class CF_Org_Facts(object):
             self.module.fail_json(msg=str(e))
         except Exception as e:
             self.module.fail_json(msg="Exception: %s" % str(e))
+
+    def get_all_orgs(self):
+        all_orgs = []
+        # raise Exception(self.cf.api_url + '/v2/organizations')
+        response, rcode = self.cf.request('GET', self.cf.api_url + '/v2/organizations')
+        # raise Exception(response)
+        if rcode == 200:
+            return [ org['entity']['name'] for org in response['resources'] ]
 
     def get_quota(self, url):
         facts = {}
@@ -309,30 +338,33 @@ class CF_Org_Facts(object):
         facts = {}
         try:
             space_name = self.module.params['space']
-            org = self.cf.search_org(self.name)
-            if org is not None:
-                if space_name is not None:
-                    facts = self.get_spaces(org['entity']['spaces_url'], space_name)[0]
-                else:
-                    facts['name'] = org['entity']['name']
-                    facts['guid'] = org['metadata']['guid']
-                    facts['status'] = org['entity']['status']
-                    facts['created_at'] = org['metadata']['created_at']
-                    facts['updated_at'] = org['metadata']['updated_at']
-                    facts['spaces'] = self.get_spaces(org['entity']['spaces_url'])
-                    if 'quota_definition_url' in org['entity']:
-                        facts['quota'] = self.get_quota(org['entity']['quota_definition_url'])
+            if self.name is not None:
+                org = self.cf.search_org(self.name)
+                if org is not None:
+                    if space_name is not None:
+                        facts = self.get_spaces(org['entity']['spaces_url'], space_name)[0]
                     else:
-                        facts['quota'] = {}
-                    facts['users'] = {}
-                    for user_type in ['users', 'managers', 'billing_managers', 'auditors']:
-                        if user_type not in facts['users']:
-                            facts['users'][user_type] = []
-                        user_url = user_type + '_url'
-                        if user_url in org['entity']:
-                            facts['users'][user_type] = self.get_users(org['entity'][user_url])
-                    domains = self.get_private_domains(org['entity']['private_domains_url'], facts['guid'])
-                    facts.update(domains)
+                        facts['name'] = org['entity']['name']
+                        facts['guid'] = org['metadata']['guid']
+                        facts['status'] = org['entity']['status']
+                        facts['created_at'] = org['metadata']['created_at']
+                        facts['updated_at'] = org['metadata']['updated_at']
+                        facts['spaces'] = self.get_spaces(org['entity']['spaces_url'])
+                        if 'quota_definition_url' in org['entity']:
+                            facts['quota'] = self.get_quota(org['entity']['quota_definition_url'])
+                        else:
+                            facts['quota'] = {}
+                        facts['users'] = {}
+                        for user_type in ['users', 'managers', 'billing_managers', 'auditors']:
+                            if user_type not in facts['users']:
+                                facts['users'][user_type] = []
+                            user_url = user_type + '_url'
+                            if user_url in org['entity']:
+                                facts['users'][user_type] = self.get_users(org['entity'][user_url])
+                        domains = self.get_private_domains(org['entity']['private_domains_url'], facts['guid'])
+                        facts.update(domains)
+            else:
+                facts['orgs'] = self.get_all_orgs()
         except CFException as e:
             self.module.fail_json(msg=str(e))
         except Exception as e:
@@ -344,7 +376,7 @@ class CF_Org_Facts(object):
 def main():
     module = AnsibleModule(
         argument_spec = dict(
-            name = dict(required=True, type='str', aliases=['id']),
+            name = dict(required=False, type='str', aliases=['id']),
             space = dict(required=False, type='str'),
             admin_user = dict(required=True, type='str'),
             admin_password  = dict(required=True, type='str', no_log=True),
@@ -353,6 +385,10 @@ def main():
         ),
         supports_check_mode = True,
     )
+
+    if not cfconfigurator_found:
+        module.fail_json(msg="The Python module 'cfconfigurator' must be installed.")
+
     cf = CF_Org_Facts(module)
     cf.run()
 

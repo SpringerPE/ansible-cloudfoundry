@@ -26,8 +26,13 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 from ansible.module_utils.basic import AnsibleModule
 
-from cfconfigurator.cf import CF
-from cfconfigurator.exceptions import CFException
+try:
+    from cfconfigurator.cf import CF
+    from cfconfigurator.exceptions import CFException
+except ImportError:
+    cfconfigurator_found = False
+else:
+    cfconfigurator_found = True
 
 
 __program__ = "cf_secgroup"
@@ -243,6 +248,10 @@ def main():
             ['organization', 'space']
         ]
     )
+
+    if not cfconfigurator_found:
+        module.fail_json(msg="The Python module 'cfconfigurator' must be installed.")
+
     cf = CF_Secgroup(module)
     cf.run()
 
