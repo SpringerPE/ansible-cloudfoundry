@@ -1,0 +1,4 @@
+---
+- name: cf
+  src: https://github.com/SpringerPE/ansible-cloudfoundry-role
+  version: origin/master

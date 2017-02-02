@@ -1,5 +1,0 @@
----
-
-# Dictionary with pip dependencies
-cf_pip_dependencies:
-  cfconfigurator: 0.2.1

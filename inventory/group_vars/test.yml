@@ -1,4 +1,18 @@
 ---
+# This file defines all the resources managed with Ansible in Cloud Foundry.
+#
+# Resources are created in the order defined here, so adding new ones is 
+# as easy as define them in this manifest, but when you want to DELETE a 
+# set of different resources, you have to be aware of the relations between
+# them. For example: imagine you want to delete an organization, a quota
+# defined for this organization, the users and the security groups, it is
+# not possible to do it in one shot. In this case, first you have to
+# set the organization to 'absent', run ansible, and then set the users,
+# quotas and security groups to 'absent' and run again. You cannot delete
+# resources if they have relations with other entities (with the exception
+# of organizations and spaces by using the 'force' parameter.
+
+
 ### Define feature flags.
 # Parameters:
 #      name
@@ -11,7 +25,9 @@
 #      env_var_visibility
 # https://docs.cloudfoundry.org/adminguide/listing-feature-flags.html
 
-cf_feature_flags: []
+cf_feature_flags:
+  - name: user_org_creation
+    value: true
 
 
 ### Define environment variables groups.
@@ -31,7 +47,11 @@ cf_feature_flags: []
 
 cf_staging_environment_variables: []
 
-cf_running_environment_variables: []
+cf_running_environment_variables:
+  - name: HOLA
+    value: hola
+  - name: ADIOS
+    value: bye
 
 
 ### Define global shared domains
@@ -41,7 +61,9 @@ cf_running_environment_variables: []
 #
 # List of domains available in CF
 
-cf_shared_domains: []
+#cf_shared_domains:
+#  - name: jriguera.cf.springer-sbm.com
+#    state: present
 
 
 ### Define global security groups
@@ -78,8 +100,23 @@ cf_shared_domains: []
 # you have to set the state to 'absent', run ansible, and then change the name
 # and remove the state or set it up to 'present'
 
-cf_security_groups: []
-
+cf_security_groups:
+  - name: sec1
+    state: present
+    context: running
+    context_state: present
+    rules:
+    - name: "allow-proxy"
+      protocol: tcp
+      destination: "10.20.0.1/0"
+      ports: "8080"
+  - name: sec2
+    state: present
+    rules:
+    - name: "allow-proxy2"
+      protocol: tcp
+      destination: "10.30.0.1/0"
+      ports: "8080"
 
 ### Define quotas
 # Parameters:
@@ -97,7 +134,12 @@ cf_security_groups: []
 #
 # Docs: https://docs.cloudfoundry.org/adminguide/quota-plans.html
 
-cf_quotas: []
+cf_quotas:
+  - name: quota1
+    state: present
+    total_services: 100
+    total_routes: 1000
+    memory_limit: 1000
 
 
 ### Define global users of the platform
@@ -123,7 +165,17 @@ cf_quotas: []
 # and if the organization does not exits it will be ignored (ansible will not
 # fail).
 
-cf_users: []
+cf_users:
+  - name: pepe@hola.com
+    state: present
+    password: hola
+    given_name: Pepe
+    family_name: Family
+  - name: claudio@hola.com
+    state: present
+    password: hola
+    given_name: Claudio
+    family_name: Family
 
 
 ### Define organizations, spaces and links with users and quotas
@@ -206,4 +258,25 @@ cf_users: []
 # name and remove the state or set it up to 'present'. All apps, routes, etc
 # will be deleted!
 
-cf_orgs: []
+cf_orgs:
+  - name: org1
+    quota: quota1
+    state: present
+    users:
+    - name: pepe@hola.com
+    managers:
+    - name: claudio@hola.com
+    spaces:
+    - name: test
+    - name: second
+  - name: org2
+    state: present
+    quota: quota1
+    spaces:
+    - name: live
+      state: present
+      managers:
+      - name: claudio@hola.com
+      security_groups:
+        - name: sec1
+          state: present
